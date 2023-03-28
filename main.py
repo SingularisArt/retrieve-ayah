@@ -19,7 +19,7 @@ def get_image(data, args, verse_num):
         return
 
     # Add the verse ending mark with number to the bottom right corner
-    verse_num_arabic = convert_numbers.english_to_arabic(verse_num + 1)
+    verse_num_arabic = convert_numbers.english_to_arabic(verse_num)
     ending_mark = "\u06DD" + verse_num_arabic
 
     quranic_text += ending_mark
@@ -51,7 +51,7 @@ def get_image(data, args, verse_num):
 
     # Format the surah and verse numbers
     out_surah_num = str(args.surah_num).zfill(3)
-    out_surah_verse = str(verse_num + 1).zfill(3)
+    out_surah_verse = str(verse_num).zfill(3)
 
     # Save the image to a file
     dir = f"surah-{out_surah_num}"
@@ -80,7 +80,7 @@ def main():
     data = response.json()["data"]
 
     if args.verse_num and (
-        args.verse_num > 0 or args.verse_num < int(data["numberOfAyahs"]) + 1
+        args.verse_num < 0 or args.verse_num > int(data["numberOfAyahs"]) + 1
     ):
         print("Verse number is out of range")
         print(
@@ -89,7 +89,7 @@ def main():
         )
         return
 
-    if args.verse_num:
+    if args.verse_num or args.verse_num == 0:
         get_image(data, args, args.verse_num)
     else:
         for verse_num in range(1, data["numberOfAyahs"] + 1):
